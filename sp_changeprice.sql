@@ -1,7 +1,7 @@
 USE SVA
 GO
 
-CREATE PROCEDURE [dbo].[sp_changeprice]
+ALTER PROCEDURE [dbo].[sp_changeprice]
 (
 	@price DECIMAL(18,2) = 0
 	, @last_price DECIMAL(18,2) = 0
@@ -28,6 +28,7 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRAN
 				IF @last_price <= @price BEGIN
+
 					IF @profile <> 13 AND @profile <> 16 BEGIN
 						UPDATE SVA.dbo.T_GARANTIA SET
 							nPRECIOVENTAGARANTIA = @price
@@ -82,7 +83,6 @@ BEGIN
 				END
 				ELSE BEGIN
 					IF (@profile = 16) OR (@profile = 13) BEGIN
-						
 						SELECT 
 							@warrantyimport = nIMPORTEGARANTIA
 						FROM SVA.dbo.T_GARANTIA
@@ -98,6 +98,22 @@ BEGIN
 								, sModifUsuario = @user
 								, nFechaModificacion = CONVERT(varchar, GETDATE(), 112)
 							WHERE sCODIGOBARRAS = @codesva
+
+							INSERT INTO SVA.dbo.T_Precios_Hist (
+								scodigobarras
+								, precio
+								, Usuario
+								, fechaMod
+								, hora
+								, ip
+							) VALUES (
+								@codesva
+								, @price
+								, @user
+								, CONVERT(varchar, GETDATE(), 112)
+								, CONVERT(varchar, GETDATE(), 108)
+								, @ipaddress
+							)
 
 							SELECT 'OK' AS respuesta
 						END
