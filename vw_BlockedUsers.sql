@@ -1,7 +1,7 @@
 USE [CATALOGOS]
 GO
 
-/****** Object:  View [dbo].[vw_BlockedUsers]    Script Date: 06/10/2017 11:27:06 a. m. ******/
+/****** Object:  View [dbo].[vw_BlockedUsers]    Script Date: 07/03/2018 01:15:02 p. m. ******/
 SET ANSI_NULLS ON
 GO
 
@@ -9,7 +9,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
-CREATE View [dbo].[vw_BlockedUsers]
+
+ALTER View [dbo].[vw_BlockedUsers]
 AS
 	SELECT bl.id as id_BlockedUser,
 		emp.id_empleados,
@@ -27,6 +28,7 @@ AS
 	INNER JOIN CATALOGOS.dbo.tc_empleados emp ON bl.empleados_id = emp.id_empleados
 	INNER JOIN CATALOGOS.dbo.tc_departamento dpto on emp.cve_depto = dpto.id_departamento
 	INNER JOIN CATALOGOS.dbo.tc_puesto job on emp.cve_puesto = job.id_puesto
+	WHERE bl.blocked_status = 1
 GO
 
 
